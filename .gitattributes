@@ -1,2 +1,3 @@
 public/data/zones.csv text eol=lf
 public/data/zones-2026.geojson text eol=lf
+public/basemap/streets.geojson text eol=lf

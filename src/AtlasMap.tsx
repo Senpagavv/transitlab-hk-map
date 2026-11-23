@@ -105,18 +105,23 @@ export default function AtlasMap({
   }, [metric, field])
   useEffect(() => {
     let alive = true
+    const controller = new AbortController()
     setBasemapError(false)
-    if (detailed)
-      loadAcademicBasemapStyle()
-        .then((s) => {
-          if (alive) setStyle(s)
-        })
-        .catch(() => {
-          if (alive) setBasemapError(true)
-        })
-    else setStyle(simple)
+    setStyle(simple)
+    if (!detailed) return
+    const deadline = window.setTimeout(() => controller.abort(), 5000)
+    loadAcademicBasemapStyle(controller.signal)
+      .then((s) => {
+        if (alive) setStyle(s)
+      })
+      .catch(() => {
+        if (alive) setBasemapError(true)
+      })
+      .finally(() => window.clearTimeout(deadline))
     return () => {
       alive = false
+      window.clearTimeout(deadline)
+      controller.abort()
     }
   }, [detailed])
   useEffect(() => {
@@ -190,7 +195,10 @@ export default function AtlasMap({
         cursor={hover ? 'pointer' : 'grab'}
         attributionControl={false}
         onError={() => {
-          if (detailed) setBasemapError(true)
+          if (detailed && style !== simple) {
+            setStyle(simple)
+            setBasemapError(true)
+          }
         }}
         onLoad={() => {
           map.current?.getMap().touchZoomRotate?.disableRotation()
@@ -263,6 +271,53 @@ export default function AtlasMap({
             paint={{ 'line-color': '#182f42', 'line-width': 2.5 }}
           />
         </Source>
+        {detailed && style === simple && (
+          <Source
+            id="local-streets"
+            type="geojson"
+            data={new URL('./basemap/streets.geojson', document.baseURI).href}
+          >
+            <Layer
+              id="local-roads"
+              type="line"
+              minzoom={12}
+              filter={['==', ['get', 'class'], 'local']}
+              paint={{
+                'line-color': '#53696e',
+                'line-opacity': 0.48,
+                'line-width': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  12,
+                  0.55,
+                  16,
+                  1.5,
+                ],
+              }}
+            />
+            <Layer
+              id="main-roads"
+              type="line"
+              filter={['==', ['get', 'class'], 'main']}
+              paint={{
+                'line-color': '#385864',
+                'line-opacity': 0.73,
+                'line-width': [
+                  'interpolate',
+                  ['linear'],
+                  ['zoom'],
+                  8,
+                  0.35,
+                  12,
+                  0.95,
+                  16,
+                  2.3,
+                ],
+              }}
+            />
+          </Source>
+        )}
         {labelZones.map((z) => (
           <Marker
             key={z.zone}
@@ -321,12 +376,12 @@ export default function AtlasMap({
       {basemapError && (
         <p className="map-note">
           {lang
-            ? '详细底图暂不可用，仍可查看分区。'
-            : 'Street basemap unavailable. Zone data is visible.'}
+            ? '街道底图使用随图提供的 OpenStreetMap 路网。'
+            : 'Showing the bundled OpenStreetMap road network.'}
         </p>
       )}
       <div className="credit">
-        {detailed && (
+        {detailed && style !== simple && (
           <a href="https://www.landsd.gov.hk" target="_blank" rel="noreferrer">
             <img src={LANDSD_LOGO_URL} alt="Lands Department" />
           </a>
@@ -346,7 +401,22 @@ export default function AtlasMap({
         >
           HK Community GTFS
         </a>
-        {detailed && ' · Map from Lands Department'}
+        {detailed &&
+          (style !== simple ? (
+            ' · Map from Lands Department'
+          ) : (
+            <>
+              {' '}
+              ·{' '}
+              <a
+                href="https://www.openstreetmap.org/copyright"
+                target="_blank"
+                rel="noreferrer"
+              >
+                © OpenStreetMap contributors
+              </a>
+            </>
+          ))}
       </div>
     </>
   )

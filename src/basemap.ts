@@ -19,10 +19,16 @@ export const transformBasemapRequest: RequestTransformFunction = (
 }
 
 /** Academic light basemap style: quiet neutral paper tone so analytical layers stay readable. */
-export async function loadAcademicBasemapStyle(): Promise<StyleSpecification> {
-  const response = await fetch(HK_BASEMAP_STYLE_URL)
+export async function loadAcademicBasemapStyle(
+  signal: AbortSignal,
+): Promise<StyleSpecification> {
+  const response = await fetch(HK_BASEMAP_STYLE_URL, { signal })
   if (!response.ok) throw new Error('Basemap style unavailable')
   const style = (await response.json()) as StyleSpecification
+  if (typeof style.sprite === 'string') {
+    const sprites = await fetch(style.sprite + '.json', { signal })
+    if (!sprites.ok) throw new Error('Lands Department service unavailable')
+  }
   const p = {
     sea: '#E8EFF4',
     land: '#F8FAFC',

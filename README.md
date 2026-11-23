@@ -11,7 +11,7 @@ A public data map of Hong Kong’s population, jobs, weekday arrivals and school
 1. Open the map and select **Explore Kai Tak**, or search for zone **286.2**. The map also accepts district names and transport stops.
 2. The inspector shows **30,034** allocated residents in 2021 and **84,141** estimated residents in 2026. The estimate is for the whole model zone around the station.
 3. Switch between **Population** and **Population density**. The first counts residents. The second divides by the original model area. Each legend class shows how many zones it contains.
-4. Zoom in for more local labels. Turn on **Detailed street basemap** for the Lands Department backdrop. The default view draws all analytical layers and labels from the downloaded snapshot.
+4. Zoom in for more local labels. Turn on **Detailed street basemap** to see the roads underneath the population layer. The viewer includes a street network from OpenStreetMap and uses the Lands Department backdrop when its service is reachable.
 
 ## Download or run locally
 

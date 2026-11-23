@@ -6,6 +6,8 @@ Population, planning, education and transport inputs are credited to the Census 
 
 Detailed map background and labels are provided by the Lands Department, © The Government of the Hong Kong SAR. Its map service terms apply. The public viewer loads its street tiles on request. [Lands Department map service](https://portal.csdi.gov.hk/csdi-webpage/apidoc/VectorMapAPI).
 
+The [bundled street network](public/basemap/streets.geojson) is © OpenStreetMap contributors. This derived database is available under the Open Database License 1.0. Credit OpenStreetMap and its contributors when displaying these roads. [OpenStreetMap attribution](https://www.openstreetmap.org/copyright) · [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/).
+
 The searchable stop database is derived from Hong Kong Community GTFS, made available under the Open Database License (ODbL) 1.0. The distributed stop index and any database rights derived from that source are offered under ODbL 1.0. Preserve its attribution and applicable derivative-database notices. [Upstream database](https://github.com/wheelstransit/hongkong-community-gtfs) · [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/).
 
 React, MapLibre GL JS, react-map-gl and the build dependencies keep their upstream licences. Dependency versions and source packages are listed in the lockfile.
