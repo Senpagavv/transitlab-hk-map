@@ -96,6 +96,7 @@ def main():
         json.dumps(geometry, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
         + "\n",
         encoding="utf-8",
+        newline="\n",
     )
     with (OUT / "zones.csv").open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(zones[0]), lineterminator="\n")
